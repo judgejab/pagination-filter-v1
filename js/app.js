@@ -7,6 +7,8 @@
 //Find total number of students
 var studentTotal = document.getElementsByClassName("student-item").length;
 var itemsToShowPerPage = 10;
+var noResultsP;
+var noResultsM;
 
 //empty array of objects for students
 var studentArray = [];
@@ -14,8 +16,8 @@ var studentArray = [];
 
 //Cach DOM elements for easy access
 var page = document.querySelector(".page");
-var paginationLink = document.getElementsByClassName("pagination-link");
 var studentList = document.querySelector(".student-list");
+var paginationLink = document.getElementsByClassName('pagination-link');
 
 
 //Call buildSearch()
@@ -158,19 +160,22 @@ function displayPaginationLinks() {
 	//add individual elements
 	for(var i = 1; i <= pageCount; i++) {
 		pagLink = document.createElement('li');
+		pagLink.classList.add("pagination-item");
 		link = document.createElement('a');
+		link.classList.add("pagination-link");
 		link.innerHTML = i;
 		link.href = "#";
 		pagLink.appendChild(link);
 		pagList.appendChild(pagLink);
 	}
 
-	//make first link 'active'
-	pagList.children[0].children[0].classList.add("active");
 	//add to wrapper
 	wrapper.appendChild(pagList);
 	//add wrapper to page
 	page.appendChild(wrapper);
+
+	//make first link 'active'
+	paginationLink[0].classList.add('active');
 }
 
 function paginate(event) {
@@ -212,6 +217,15 @@ function initialDisplay() {
 
 
 //Add search function
+function searchFunction() {
+	var input = document.querySelector('student-search-input').value.toLowerCase;
+
+
+	noResultsP = document.createElement('p');
+	noResultsP.classList.add('no-results-found');
+	noResultsM = "Sorry! No results were found";
+	noResultsP.innerHTML = noResultsM;
+}
 	//Using progressive enhancement, add the student search markup as presented in the filters-example.html file to the index.html file.
 	//Make sure it's case insensitive
 	//User can search by name or e-mail address. Also partial matches
@@ -222,6 +236,8 @@ function initialDisplay() {
 
 //Event Listeners
 	//Search button
+	document.querySelector('button').addEventListener("click", searchFunction);
+	document.querySelector('input').addEventListener("keyup", searchFunction);
 
 	//Pagination
 	for(var i = 0; i < paginationLink.length; i++) {
