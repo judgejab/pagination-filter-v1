@@ -3,15 +3,16 @@
 
 'useStrict';
 
+//empty array of objects for students
+var studentArray = [];
+var studentArrayCopy = [];
+
 
 //Find total number of students
 var studentTotal = document.getElementsByClassName("student-item").length;
 var itemsToShowPerPage = 10;
 var noResultsP;
 var noResultsM;
-
-//empty array of objects for students
-var studentArray = [];
 
 
 //Cach DOM elements for easy access
@@ -62,9 +63,9 @@ function calculatePageCount() {
 
 
 //create student object
-function studentObject(name, avatar, email, dateJoined) {
-	this.name = name;
+function studentObject(avatar, name, email, dateJoined) {
 	this.avatar = avatar;
+	this.name = name;
 	this.email = email;
 	this.dateJoined = dateJoined;
 }
@@ -81,10 +82,11 @@ function studentFilter() {
 		dateJoined = studentList[i].children[1].children[0].innerHTML;
 
 		//create new object
-		student = new studentObject(name, avatar, email, dateJoined);
+		student = new studentObject(avatar, name, email, dateJoined);
 		
 		//add each student into the array for later use
 		studentArray.push(student);		
+		studentArrayCopy.push(student);
 	}
 }
 
@@ -108,15 +110,16 @@ function displayStudents(student) {
 
 	//create the details to go into detailsDiv
 	avatarImg = document.createElement('img');
+	avatarImg.className = ('avatar');
 	avatarImg.src = student.avatar;
 	nameH = document.createElement('h3');
 	nameH.innerHTML = student.name;
 	emailSpan = document.createElement('span');
 	emailSpan.innerHTML = student.email;
 	//add their classes
-	avatarImg.classList.add('avatar');
+	
 	emailSpan.classList.add('email');
-
+	nameH.classList.add('name');
 	//add details to detailsDiv
 	detailsDiv.appendChild(avatarImg);
 	detailsDiv.appendChild(nameH);
@@ -210,6 +213,10 @@ function initialDisplay() {
     //displayStudents(studentArray);
     if (calculatePageCount() > 1) {
       displayPaginationLinks();
+         for (var i = 0; i < paginationLink.length; i++) {
+        paginationLink[i].addEventListener("click", paginate);
+      }
+    
    }
    	//show first 10 students
 	studentShow(0, 9);
@@ -218,20 +225,39 @@ function initialDisplay() {
 
 //Add search function
 function searchFunction() {
-	var input = document.querySelector('student-search-input').value.toLowerCase;
+	var input = document.querySelector('.student-search-input').value.toLowerCase();
 
+	//Go through names and emails of students
+	//If input does not match to names and emails then remove the student from the list array so it doesn't show any more
+	for(var i = studentArray.length; i--;){
+		if(studentArray[i].name.indexOf(input) === -1 && studentArray[i].email.indexOf(input) === -1) {
+			studentArray.splice(i, 1);
+		}
+	}
 
+	studentList.innerHTML = '';
+
+	 if(studentArray.length >= 1) {
+      // Add the filtered students
+      // (assuming one or more student matches from above)
+      initialDisplay();
+    } else {
+
+	//If no matches are found, add HTML message to say so
 	noResultsP = document.createElement('p');
 	noResultsP.classList.add('no-results-found');
 	noResultsM = "Sorry! No results were found";
 	noResultsP.innerHTML = noResultsM;
+	page.appendChild(noResultsP);
 }
-	//Using progressive enhancement, add the student search markup as presented in the filters-example.html file to the index.html file.
-	//Make sure it's case insensitive
-	//User can search by name or e-mail address. Also partial matches
-	//Dynamically filter the student listings.
-	//Results should also be paginated. Don't use jQuery
-	//If no matches are found, add HTML message to say so
+	//when done, empty array
+	//copy the array from the copy version back into thew studentArray so it goes back to normal
+	//Then load intial view
+	studentArray = studentArrayCopy.slice(0);
+}
+	
+
+	
 
 
 //Event Listeners
