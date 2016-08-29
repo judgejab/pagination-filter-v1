@@ -26,7 +26,8 @@ initialDisplay();
 function studentShow(start, end) {
 	studentList.innerHTML = '';
 
-	for(var i = start; i <= end; i++){
+	for(var i = start; i < end; i++){
+		if(!studentArray[i]) continue;
 		var newStudent = displayStudents(studentArray[i]);
 		studentList.appendChild(newStudent);
 	}
@@ -233,14 +234,14 @@ function searchFunction() {
 	//Go through names and emails of students
 	//If input does not match to names and emails then remove the student from the list array so it doesn't show any more
 	for(var i = studentArray.length -1; i >= 0; i--){
-		console.log(i);
+		//console.log(i);
 		if(studentArray[i].name.indexOf(input) === -1 && studentArray[i].email.indexOf(input) === -1) {
 			studentArray.splice(i, 1);
 		}
 	}
 
 
-    document.querySelector('.pagination').outerHTML = '';
+   if(document.querySelector('.pagination')) document.querySelector('.pagination').outerHTML = '';
    
 	studentList.innerHTML = '';
 
@@ -250,11 +251,14 @@ function searchFunction() {
       initialDisplay();
     } else {
 	//If no matches are found, add HTML message to say so
-	noResultsP = document.createElement('p');
-	noResultsP.classList.add('no-results-found');
-	noResultsM = "Sorry! No results were found";
-	noResultsP.innerHTML = noResultsM;
-	page.appendChild(noResultsP);
+
+       if(!document.querySelector('.no-results-found')) {
+			noResultsP = document.createElement('p');
+			noResultsP.classList.add('no-results-found');
+			noResultsM = "Sorry! No results were found";
+			noResultsP.innerHTML = noResultsM;
+			page.appendChild(noResultsP);
+		}
 	}
 	//when done, empty array
 	//copy the array from the copy version back into thew studentArray so it goes back to normal
