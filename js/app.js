@@ -185,6 +185,16 @@ function paginate(event) {
 
 	//variables for 
 	var start, end;
+	studentList.style.opacity = 0;
+
+	function removeLoadingClass() {
+      document.body.classList.remove('loading');
+      studentList.style.opacity = 1;
+    }
+
+    document.querySelector('body').classList.add('loading');
+
+    setTimeout(removeLoadingClass, 200);
 
 	//reset link class
 	for(var i = 0; i < paginationLink.length; i++) {
