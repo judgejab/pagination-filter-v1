@@ -6,16 +6,12 @@
 //empty array of objects for students
 var studentArray = [];
 var studentArrayCopy = [];
-
-
-//Find total number of students
-var studentTotal = document.getElementsByClassName("student-item").length;
 var itemsToShowPerPage = 10;
-var noResultsP;
-var noResultsM;
 
 
 //Cach DOM elements for easy access
+var noResultsP;
+var noResultsM;
 var page = document.querySelector(".page");
 var studentList = document.querySelector(".student-list");
 var paginationLink = document.getElementsByClassName('pagination-link');
@@ -57,10 +53,9 @@ function buildSearch () {
 
 //Calculate the number of pages needed
 function calculatePageCount() {
-	var pagesNeeded = Math.ceil(studentTotal/itemsToShowPerPage);
+	var pagesNeeded = Math.ceil(studentArray.length/itemsToShowPerPage);
 	return pagesNeeded;
 } 
-
 
 //create student object
 function studentObject(avatar, name, email, dateJoined) {
@@ -147,8 +142,12 @@ function displayStudents(student) {
 }
 
 
+
 function displayPaginationLinks() {
 	var link, pagLink;
+
+	var pageCount = calculatePageCount();
+
 
 	//create template
 	var wrapper = document.createElement('div');
@@ -158,15 +157,14 @@ function displayPaginationLinks() {
 	wrapper.appendChild(pagList);
 	
 
-	var pageCount = calculatePageCount();
 
 	//add individual elements
-	for(var i = 1; i <= pageCount; i++) {
+	for(var i = 0; i < pageCount; i++) {
 		pagLink = document.createElement('li');
 		pagLink.classList.add("pagination-item");
 		link = document.createElement('a');
 		link.classList.add("pagination-link");
-		link.innerHTML = i;
+		link.innerHTML = i + 1;
 		link.href = "#";
 		pagLink.appendChild(link);
 		pagList.appendChild(pagLink);
@@ -211,13 +209,18 @@ function paginate(event) {
 function initialDisplay() {
 	studentFilter();
     //displayStudents(studentArray);
-    if (calculatePageCount() > 1) {
+    if (calculatePageCount() > 0) {
       displayPaginationLinks();
          for (var i = 0; i < paginationLink.length; i++) {
         paginationLink[i].addEventListener("click", paginate);
       }
     
    }
+
+       if(document.querySelector('.no-results-found')) {
+      document.querySelector('.no-results-found').outerHTML = "";
+    }
+
    	//show first 10 students
 	studentShow(0, 9);
 }
@@ -229,12 +232,16 @@ function searchFunction() {
 
 	//Go through names and emails of students
 	//If input does not match to names and emails then remove the student from the list array so it doesn't show any more
-	for(var i = studentArray.length; i--;){
+	for(var i = studentArray.length -1; i >= 0; i--){
+		console.log(i);
 		if(studentArray[i].name.indexOf(input) === -1 && studentArray[i].email.indexOf(input) === -1) {
 			studentArray.splice(i, 1);
 		}
 	}
 
+
+    document.querySelector('.pagination').outerHTML = '';
+   
 	studentList.innerHTML = '';
 
 	 if(studentArray.length >= 1) {
@@ -242,14 +249,13 @@ function searchFunction() {
       // (assuming one or more student matches from above)
       initialDisplay();
     } else {
-
 	//If no matches are found, add HTML message to say so
 	noResultsP = document.createElement('p');
 	noResultsP.classList.add('no-results-found');
 	noResultsM = "Sorry! No results were found";
 	noResultsP.innerHTML = noResultsM;
 	page.appendChild(noResultsP);
-}
+	}
 	//when done, empty array
 	//copy the array from the copy version back into thew studentArray so it goes back to normal
 	//Then load intial view
