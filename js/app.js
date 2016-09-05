@@ -26,7 +26,7 @@ initialDisplay();
 function studentShow(start, end) {
 	studentList.innerHTML = '';
 
-	for(var i = start; i < end; i++){
+	for(var i = start; i < end+1; i++){
 		if(!studentArray[i]) continue;
 		var newStudent = displayStudents(studentArray[i]);
 		studentList.appendChild(newStudent);
@@ -251,14 +251,23 @@ function searchFunction() {
 	}
 
 
-   if(document.querySelector('.pagination')) document.querySelector('.pagination').outerHTML = '';
+   if(document.querySelector('.pagination')) 
+   	document.querySelector('.pagination').outerHTML = '';
    
 	studentList.innerHTML = '';
+
+	
 
 	 if(studentArray.length >= 1) {
       // Add the filtered students
       // (assuming one or more student matches from above)
       initialDisplay();
+
+      if(studentArray.length >= 10)  {
+      		document.querySelector('.pagination-links').innerHTML = "";
+    	} 	//added this to try and get rid of pagination link if less than 1 page of results?
+
+        
     } else {
 	//If no matches are found, add HTML message to say so
 
@@ -270,6 +279,9 @@ function searchFunction() {
 			page.appendChild(noResultsP);
 		}
 	}
+
+	
+
 	//when done, empty array
 	//copy the array from the copy version back into thew studentArray so it goes back to normal
 	//Then load intial view
