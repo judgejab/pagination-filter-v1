@@ -263,7 +263,7 @@ function searchFunction() {
       // (assuming one or more student matches from above)
       initialDisplay();
 
-      if(studentArray.length >= 10)  {
+      if(studentArray.length <= 10)  {
       		document.querySelector('.pagination-links').innerHTML = "";
     	} 	//added this to try and get rid of pagination link if less than 1 page of results?
 
